@@ -1,27 +1,49 @@
 const mongoose = require("mongoose")
+const Schema = mongoose.Schema;
 
-const userSchema = new mongoose.Schema(
+const userSchema = new Schema(
     {
-        username: {
+        name: {
             type: String,
-            required: true, 
-            unique: true
+            //required: true, 
+            //unique: true
         },
         email: {
             type: String,
-            required: true, 
-            unique: true
+            //required: true, 
+            //unique: true
         },
         password: {
         type: String,
-        required: true, 
+        //required: true, 
         },
         isAdmin:{
             type: Boolean,
             default: false,
         },
     },
-    {timestamps: true}
+    {versionKey: false}
+       
 );
 
-module.exports = mongoose.model("User", userSchema);
+const userModel = mongoose.model("usuario", userSchema);
+
+const mostrar = async ()=>{
+    const usuario = await userModel.find()
+    console.log(usuario)
+
+}
+
+const crear = async ()=>{
+    const usuario = new userModel({
+        name: "liliiiiiiasssd", 
+        email: "123456@gmailcom",
+        password: "123"
+    })
+    const resultado = await usuario.save()
+    console.log(resultado)
+}
+
+mostrar();
+crear();
+module.exports = userModel
