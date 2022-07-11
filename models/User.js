@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
     {
-        name: {
+        username: {
             type: String,
             //required: true, 
             //unique: true
@@ -36,7 +36,7 @@ const mostrar = async ()=>{
 
 const crear = async ()=>{
     const usuario = new userModel({
-        name: "liliiiiiiasssd", 
+        username: "licodetest", 
         email: "123456@gmailcom",
         password: "123"
     })
