@@ -44,6 +44,6 @@ const crear = async ()=>{
     console.log(resultado)
 }
 
-mostrar();
-crear();
+// mostrar();
+// crear();
 module.exports = userModel
