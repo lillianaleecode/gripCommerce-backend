@@ -39,7 +39,7 @@ router.post('/login', async (req, res) => {
       );
 
       const originalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
-      originalPassword != inputPassword && 
+      originalPassword != req.body.password && 
       res.status(401).json("Wrong Password");
 
       res.status(200).json(user)
