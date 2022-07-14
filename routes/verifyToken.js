@@ -14,7 +14,7 @@ const verifyToken = (req, res, next) =>{
     }
 };
 
-//check if user is an admin or not
+//check if user is an admin and validate token with the id.
 const verifyTokenAndAuth = (req, res, next) => {
     verifyToken(req, res, () => {
         if(req.user.id === req.params.id || req.user.isAdmin ) {
@@ -25,4 +25,15 @@ const verifyTokenAndAuth = (req, res, next) => {
     })
 }
 
-module.exports = {verifyToken, verifyTokenAndAuth};
+//check if user admin only
+const verifyTokenAndAdmin = (req, res, next) => {
+    verifyToken(req, res, () => {
+      if (req.user.isAdmin) {
+        next();
+      } else {
+        res.status(403).json("you are not an admin. not allowed!");
+      }
+    });
+  };
+
+module.exports = {verifyToken, verifyTokenAndAuth, verifyTokenAndAdmin};
