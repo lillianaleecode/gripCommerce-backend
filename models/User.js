@@ -22,9 +22,11 @@ const userSchema = new Schema(
             default: false,
         },
     },
-    {versionKey: false}
+    {versionKey: false, timestamps: true}
        
 );
+
+// userSchema.set('timestamps', true);
 
 const userModel = mongoose.model("usuario", userSchema);
 

@@ -53,15 +53,43 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
     const query = req.query.new;
     try {
         //bringing the 5 latests users
-        //localhost:5000/api/users?new=true
+        //localhost:5000/api/user?new=true
       const users = query
         ? await User.find().sort({ _id: -1 }).limit(5)
-        //bringing all: localhost:5000/api/users
+        //bringing all: localhost:5000/api/user
         : await User.find();
       res.status(200).json(users);
     } catch (err) {
       res.status(500).json(err);
     }
+  });
+
+  //GET USER STATS
+//users created from last year until now.
+router.get("/stats", verifyTokenAndAdmin, async (req, res) => {
+    const date = new Date();
+    const lastYear = new Date(date.setFullYear(date.getFullYear() - 1));
+  
+    //mongodb jargon. $gte= greater than equal to
+    //had to set timestamp to true (in User.js) to use this aggregate()
+      const data = await User.aggregate([
+        { $match: { createdAt: { $gte: lastYear } } },
+        {
+          $project: {
+            month: { $month: "$createdAt" },
+          },
+        },
+        {
+          $group: {
+            _id: "$month", //will show only the # of the month.
+            total: { $sum: 1 }, //will show to total users registered in that month
+          },
+        },
+      ]);
+      res.status(200).json(data);
+      console.log(data);
+      
+    
   });
   
 module.exports = router
