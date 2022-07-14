@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const CryptoJS = require("crypto-js");
 const router = require("express").Router();
-const {verifyTokenAndAuth} = require("./verifyToken");
+const {verifyTokenAndAuth, verifyTokenAndAdmin} = require("./verifyToken");
 
 //to update
 router.put("/:id", verifyTokenAndAuth, async (req, res) => {
@@ -28,7 +28,7 @@ router.put("/:id", verifyTokenAndAuth, async (req, res) => {
 })
 
 //delete user
-router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
+router.delete("/:id", verifyTokenAndAuth, async (req, res) => {
     try {
       await User.findByIdAndDelete(req.params.id);
       res.status(200).json("User is deleted.");
@@ -37,4 +37,31 @@ router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
     }
 });
 
+//GET USER (only admin only)
+router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
+    try {
+      const user = await User.findById(req.params.id);
+      const { password, ...others } = user._doc;
+      res.status(200).json(others);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  });
+
+  //GET EVERY USER (only admin only)
+router.get("/", verifyTokenAndAdmin, async (req, res) => {
+    const query = req.query.new;
+    try {
+        //bringing the 5 latests users
+        //localhost:5000/api/users?new=true
+      const users = query
+        ? await User.find().sort({ _id: -1 }).limit(5)
+        //bringing all: localhost:5000/api/users
+        : await User.find();
+      res.status(200).json(users);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  });
+  
 module.exports = router
