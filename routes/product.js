@@ -40,4 +40,43 @@ router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
     }
 });
   
+//GET Product (individual)
+router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
+    try {
+      const product = await Product.findById(req.params.id);
+      res.status(200).json(product);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  });
+
+  //GET all the products
+  //here it is slightly different from the other requests. as I want to get the products by the newest products or by category for example.
+router.get("/", verifyTokenAndAdmin, async (req, res) => {
+
+    const queryNew = req.query.new;
+    const queryCategory = req.query.category;
+
+    try {
+        let products;
+
+        if (queryNew) {
+        products = await Product.find().sort({ createdAt: -1 }).limit(1);
+        } else if (queryCategory) {
+        products = await Product.find({
+            categories: {
+            $in: [queryCategory],
+            }, //localhost:5000/api/product?category=tshirt will bring all the tshirts for example.
+        });
+        } else {
+        products = await Product.find();
+        }
+
+        res.status(200).json(products);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+    });
+
+
 module.exports = router
