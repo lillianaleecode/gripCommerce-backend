@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+
 const ProductSchema = new mongoose.Schema(
   {
     title: { 
@@ -17,16 +18,21 @@ const ProductSchema = new mongoose.Schema(
     },
     categories: { 
         type: Array 
-    },
+    },//changing to arrays to have more options
     size: { 
-        type: String 
+        type: Array 
     },
     color: { 
-        type: String 
+        type: Array,
+        required: true  
     },
     price: { 
         type: Number, 
         required: true 
+    },
+    inStock: { 
+        type: Boolean, 
+        default: true 
     },
     
   },
