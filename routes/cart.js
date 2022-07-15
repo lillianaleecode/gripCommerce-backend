@@ -40,6 +40,27 @@ router.delete("/:id", verifyTokenAndAuth, async (req, res) => {
   }
 });
 
+//GET USER'S CART
+//note it finds for the userID and not the card id.
+//findOne() because users can only have 1 cart.
+router.get("/find/:userId", verifyTokenAndAuth, async (req, res) => {
+    try {
+      const cart = await Cart.findOne({ userId: req.params.userId });
+      res.status(200).json(cart);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  });
+  
+  // //GET ALL the carts from all the users. (only the admin allowed to have this data)
+  router.get("/", verifyTokenAndAdmin, async (req, res) => {
+    try {
+      const carts = await Cart.find();
+      res.status(200).json(carts);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  });
 
 
 module.exports = router;
